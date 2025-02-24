@@ -74,7 +74,7 @@ SoRec/
 1. **Clone the Repository:**
 
    ```bash
-   git clone https://github.com/yourusername/SoRec.git
+   git clone https://github.com/MattesKnigge/SoRec.git
    cd SoRec
    ```
 
