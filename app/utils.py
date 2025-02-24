@@ -2,11 +2,12 @@
 import logging
 from fastapi import HTTPException
 from opcua import ua
+import asyncio
 
 def update_opc_node(client, node_identifier: str, speed: float):
     if not client:
         logging.error("OPC-UA client is not connected.")
-        raise HTTPException(status_code=500, detail="OPC-UA client is not connected.")
+        raise HTTPException(status_code=503, detail="OPC-UA client is not connected.")
 
     try:
         node = client.get_node(node_identifier)
@@ -19,8 +20,7 @@ def update_opc_node(client, node_identifier: str, speed: float):
         raise HTTPException(status_code=500, detail=f"Error setting speed: {e}")
 
 async def monitor_speed_belt(client, previous_speed_belt_ref):
-    import asyncio
-    node_identifier = 'ns=3;s="OPC_Daten"."Istwert Magnertband"'
+    node_identifier = 'ns=3;s="OPC_Daten"."Istwert Magnertband"' # Typo is important here, DON'T change!
     try:
         while True:
             try:
@@ -28,7 +28,7 @@ async def monitor_speed_belt(client, previous_speed_belt_ref):
                 current_speed = node.get_value()
                 logging.info("Scheduled reading - Conveyor belt speed: %s", current_speed)
                 if previous_speed_belt_ref[0] is not None:
-                    if abs(current_speed - previous_speed_belt_ref[0]) >= 0.1:
+                    if abs(current_speed - previous_speed_belt_ref[0]) >= 0.1: # Modify the threshold as needed
                         logging.info("ALERT: Speed changed from %s to %s", previous_speed_belt_ref[0], current_speed)
                 previous_speed_belt_ref[0] = current_speed
             except Exception as e:

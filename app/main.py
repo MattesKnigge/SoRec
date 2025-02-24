@@ -1,5 +1,7 @@
 # app/main.py
 import logging, asyncio
+from time import sleep
+
 from fastapi import FastAPI
 from opcua import Client
 from app.routes import router as api_router
@@ -18,7 +20,7 @@ app = FastAPI()
 OPC_ADDRESS = "opc.tcp://139.174.27.2:4840"
 opc_client = Client(OPC_ADDRESS)
 
-# Initialize global state for routes (this is a simple example; consider better state management for production)
+# Initialize global state for routes
 routes_client = opc_client  # Assign the initialized client to your routes
 
 @app.on_event("startup")
@@ -29,6 +31,7 @@ async def startup_event():
         logging.info("Successfully connected to OPC-UA Server at: %s", OPC_ADDRESS)
     except Exception as e:
         logging.error("Error connecting to OPC-UA Server: %s", e)
+
 
 @app.on_event("shutdown")
 async def shutdown_event():
