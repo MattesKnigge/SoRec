@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, condecimal
 
 class SpeedUpdate(BaseModel):
-    speed: float
+    speed: condecimal(ge=0, le=100)
+    
